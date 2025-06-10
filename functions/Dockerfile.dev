@@ -1,0 +1,38 @@
+# syntax=docker/dockerfile:1
+
+FROM node:24-bullseye-slim
+
+# TODO: セキュリティ的に良くないが、ローカル環境のみで使用
+ARG OPENAI_API_KEY
+# 作業ディレクトリを設定
+WORKDIR /app
+
+# 開発に必要なツールをインストール
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
+    --mount=type=cache,target=/var/lib/apt,sharing=locked \
+    <<EOF
+    bash -ex
+    apt-get update
+    apt-get install -y \
+        curl \
+        git
+    rm -rf /var/lib/apt/lists/*
+EOF
+
+# package.jsonとpackage-lock.jsonをコピー
+COPY package*.json ./
+
+# 依存関係をインストール（開発用依存関係も含む）
+RUN npm i
+
+# アプリケーションコードをコピー
+COPY . .
+
+# TODO: セキュリティ的に良くないが、ローカル環境のみで使用
+ENV OPENAI_API_KEY=${OPENAI_API_KEY}
+
+# ポート8080をエクスポート
+EXPOSE 8080
+
+# 開発サーバーを起動（ホットリロード対応）
+CMD ["npm", "run", "dev"]
