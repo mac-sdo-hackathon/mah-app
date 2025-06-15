@@ -30,7 +30,7 @@ type Props = {
   setMeetingContentAll: Dispatch<SetStateAction<string>>;
 };
 
-const Phase1: React.FC<Props> = ({
+const Phase2: React.FC<Props> = ({
   setPhase,
   limitTime,
   agenda,
@@ -468,4 +468,4 @@ const Phase1: React.FC<Props> = ({
   );
 };
 
-export default Phase1;
+export default Phase2;

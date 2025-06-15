@@ -10,7 +10,7 @@ type Props = {
   meetingContentAll: string;
 };
 
-const Phase2: React.FC<Props> = ({
+const Phase3: React.FC<Props> = ({
   agenda,
   goal,
   limitTime,
@@ -58,4 +58,4 @@ const Phase2: React.FC<Props> = ({
   );
 };
 
-export default Phase2;
+export default Phase3;
