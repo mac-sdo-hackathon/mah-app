@@ -21,6 +21,10 @@ steps:
       - '-f'
       - 'Dockerfile'
     dir: 'functions'
+    env:
+      [
+        'DOCKER_BUILDKIT=1'
+      ]
     id: 'build-image'
     waitFor: ['pull-latest-image']
 
@@ -70,7 +74,10 @@ substitutions:
   _AR_HOSTNAME: 'asia-northeast1-docker.pkg.dev'
   _SERVICE_NAME: 'api'
   _REGION: 'asia-northeast1'
-  _REPOSITORY: 'asia-northeast1-docker.pkg.dev/mac-sdo-hackathon/functions'
 
 # タイムアウト設定（20分）
 timeout: '1200s'
+
+images:
+  - '${_AR_HOSTNAME}/$PROJECT_ID/$REPO_NAME/${_SERVICE_NAME}:$COMMIT_SHA'
+  - '${_AR_HOSTNAME}/$PROJECT_ID/$REPO_NAME/${_SERVICE_NAME}:latest'
