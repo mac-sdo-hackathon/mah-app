@@ -7,20 +7,20 @@ steps:
     id: 'pull-latest-image'
 
   - name: 'gcr.io/cloud-builders/docker'
+    env:
+      - 'DOCKER_BUILDKIT=1'
+    dir: 'functions'
     args:
       - 'build'
       - '--cache-from'
       - '${_AR_HOSTNAME}/$PROJECT_ID/${_REPO_NAME}/${_SERVICE_NAME}:latest'
-      - '--tag'
+      - '-t'
       - '${_AR_HOSTNAME}/$PROJECT_ID/${_REPO_NAME}/${_SERVICE_NAME}:$COMMIT_SHA'
-      - '--tag'
+      - '-t'
       - '${_AR_HOSTNAME}/$PROJECT_ID/${_REPO_NAME}/${_SERVICE_NAME}:latest'
       - '.'
       - '-f'
       - 'Dockerfile'
-    dir: 'functions'
-    env:
-      - 'DOCKER_BUILDKIT=1'
     id: 'build-image'
     waitFor: ['pull-latest-image']
 
@@ -54,10 +54,6 @@ steps:
       - '${_CLOUD_RUN_SA}'
       - '--port'
       - '8080'
-      - '--memory'
-      - '2Gi'
-      - '--cpu'
-      - '2'
       - '--timeout'
       - '900'
       - '--concurrency'
@@ -84,6 +80,7 @@ options:
 
 # 置換変数
 substitutions:
+  _AR_HOSTNAME: 'asia-northeast1-docker.pkg.dev'
   _REPO_NAME: 'functions'
   _SERVICE_NAME: 'api'
   _CLOUD_RUN_NAME: 'meeting-app'
