@@ -353,6 +353,7 @@ const Phase1: React.FC<Props> = ({
               margin: "0px 10px 10px",
               padding: "10px",
               height: "150px",
+              overflow: "scroll"
             }}
           >
             {displayItemContent.map((it) => {
