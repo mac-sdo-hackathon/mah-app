@@ -126,12 +126,13 @@ const Phase1: React.FC<Props> = ({
           }),
         }
       );
-      const result = await response.json();
-      if (!Array.isArray(result)){
+      const result = await response.text();
+      const resultArray = JSON.parse(result.replace("```json", "").replace("```", ""))
+      if (!Array.isArray(resultArray)){
         setItemContent([]);
         return;
       }
-      setItemContent(result);
+      setItemContent(resultArray);
     } catch (e) {
       console.error(e);
     }
