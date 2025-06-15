@@ -72,6 +72,7 @@ options:
 # 置換変数
 substitutions:
   _AR_HOSTNAME: 'asia-northeast1-docker.pkg.dev'
+  _REPO_NAME: 'functions'
   _SERVICE_NAME: 'api'
   _REGION: 'asia-northeast1'
 
