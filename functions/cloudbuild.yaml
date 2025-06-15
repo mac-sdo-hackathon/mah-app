@@ -4,7 +4,7 @@ steps:
     args:
       [
         '-c',
-        'docker pull ${_AR_HOSTNAME}/$PROJECT_ID/$REPOSTORY_NAME/${_SERVICE_NAME}:latest || exit 0',
+        'docker pull ${_AR_HOSTNAME}/$PROJECT_ID/$REPO_NAME/${_SERVICE_NAME}:latest || exit 0',
       ]
     id: 'pull-latest-image'
 
@@ -12,11 +12,11 @@ steps:
     args:
       - 'build'
       - '--cache-from'
-      - '${_AR_HOSTNAME}/$PROJECT_ID/$REPOSTORY_NAME/${_SERVICE_NAME}:latest'
+      - '${_AR_HOSTNAME}/$PROJECT_ID/$REPO_NAME/${_SERVICE_NAME}:latest'
       - '-t'
-      - '${_AR_HOSTNAME}/$PROJECT_ID/$REPOSTORY_NAME/${_SERVICE_NAME}:$COMMIT_SHA'
+      - '${_AR_HOSTNAME}/$PROJECT_ID/$REPO_NAME/${_SERVICE_NAME}:$COMMIT_SHA'
       - '-t'
-      - '${_AR_HOSTNAME}/$PROJECT_ID/$REPOSTORY_NAME/${_SERVICE_NAME}:latest'
+      - '${_AR_HOSTNAME}/$PROJECT_ID/$REPO_NAME/${_SERVICE_NAME}:latest'
       - '.'
     dir: 'functions'
     id: 'build-image'
@@ -25,14 +25,14 @@ steps:
   - name: 'gcr.io/cloud-builders/docker'
     args:
       - 'push'
-      - '${_AR_HOSTNAME}/$PROJECT_ID/$REPOSTORY_NAME/${_SERVICE_NAME}:$COMMIT_SHA'
+      - '${_AR_HOSTNAME}/$PROJECT_ID/$REPO_NAME/${_SERVICE_NAME}:$COMMIT_SHA'
     id: 'push-image-sha'
     waitFor: ['build-image']
 
   - name: 'gcr.io/cloud-builders/docker'
     args:
       - 'push'
-      - '${_AR_HOSTNAME}/$PROJECT_ID/$REPOSTORY_NAME/${_SERVICE_NAME}:latest'
+      - '${_AR_HOSTNAME}/$PROJECT_ID/$REPO_NAME/${_SERVICE_NAME}:latest'
     id: 'push-image-latest'
     waitFor: ['build-image']
 
@@ -42,7 +42,7 @@ steps:
       - 'deploy'
       - 'meeting-app'
       - '--image'
-      - '${_AR_HOSTNAME}/$PROJECT_ID/$REPOSTORY_NAME/${_SERVICE_NAME}:$COMMIT_SHA'
+      - '${_AR_HOSTNAME}/$PROJECT_ID/$REPO_NAME/${_SERVICE_NAME}:$COMMIT_SHA'
       - '--region'
       - '${_REGION}'
       - '--platform'
