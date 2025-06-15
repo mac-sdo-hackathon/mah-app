@@ -57,7 +57,6 @@ steps:
     id: 'deploy-cloud-run'
     waitFor: ['push-image-sha']
 
-# ビルド設定
 options:
   # 並列実行でビルド時間短縮
   substitutionOption: 'ALLOW_LOOSE'
