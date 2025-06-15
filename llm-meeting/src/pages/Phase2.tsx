@@ -13,6 +13,8 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
+  DialogTitle,
+  Tooltip,
 } from "@mui/material";
 
 import { blobToBase64 } from "../utils/blob";
@@ -44,16 +46,21 @@ const Phase1: React.FC<Props> = ({
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const audioChunks = useRef<any[]>([]);
 
-  const [dialogContent, setDialogContent] = useState<string>("");
-
   const [meetingContent, setMeetingContent] = useState<string[]>([]);
   const meetingContentRef = useRef<string[]>([]);
-  const [actionItem, setActionItem] =
-    useState("アクションアイテムが表示されます");
+  const [itemContent, setItemContent] =
+    useState<string[]>([]);
+  const isItemDetected = itemContent.length > 0
+  const [displayItemContent, setDisplayItemContent] = useState<string[]>([]);
   // 内容が脇道に逸れているか表示されます
   const [tangent, setTangent] = useState<Tangent>({} as Tangent);
+  const isTangentDetected = (tangent.confidence ?? 100) < 40;
+  const [tangentContent, setTangentContent] = useState<string>("");
   // 争いが起きていたら仲裁します
   const [dispute, setDispute] = useState<Dispute>({} as Dispute);
+  const isDisputeDetected = dispute.conflict_detected ?? false
+  const [disputeContent, setDisputeContent] = useState<string>("");
+  // マーメイド図
   const [mermaidM, setMermaidM] = useState("");
 
   const onEndMeeting = () => {
@@ -106,18 +113,6 @@ const Phase1: React.FC<Props> = ({
     }, 15000); // 15秒録音
   }
 
-  function convertDispute(d: Dispute): string {
-    return d.steps
-      .map((eachD) => {
-        return `### ${eachD.step}: ${eachD.title}  \n${eachD.action}`;
-      })
-      .join("    \n\n");
-  }
-
-  function openDialog(content: string) {
-    setDialogContent(content);
-  }
-
   async function fetchActionItem() {
     try {
       const response = await fetch(
@@ -131,8 +126,12 @@ const Phase1: React.FC<Props> = ({
           }),
         }
       );
-      const result = await response.text();
-      setActionItem(result);
+      const result = await response.json();
+      if (!Array.isArray(result)){
+        setItemContent([]);
+        return;
+      }
+      setItemContent(result);
     } catch (e) {
       console.error(e);
     }
@@ -201,6 +200,10 @@ const Phase1: React.FC<Props> = ({
     }
   }
 
+  const copyToClipboard = async () => {
+    copy(mermaidM);
+  };
+
   useEffect(() => {
     startTime.current = new Date();
     const endTimeTmp = new Date();
@@ -245,167 +248,221 @@ const Phase1: React.FC<Props> = ({
   }, []);
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-        alignItems: "center",
-        gap: "2vw",
-      }}
-    >
+    <>
+      <Mermaid
+        code={mermaidM}
+        style={{ position: "relative", width: "80vw", height: "80vh" }}
+      ></Mermaid>
       <Box
         sx={{
-          width: "39vw",
-          flexBasis: "39vw",
-          maxHeight: "calc(100vh - 100px)",
-          overflow: "scroll",
+          position: "fixed",
+          top: "20px",
+          left: "20px"
         }}
       >
-        <p>会議の内容</p>
-        <p>残り：{meetingTime}秒</p>
-        <Box
-          sx={{
-            maxHeight: "calc(100% - 150px)",
-            backgroundColor: "#00000030",
-          }}
-        >
-          <p>
-            {meetingContent.length
-              ? meetingContent.join("\n")
-              : "会議をレコーディング中..."}
-          </p>
-          <hr />
-        </Box>
-        <Button onClick={onEndMeeting} color="error" variant="contained">
-          会議を終了する
-        </Button>
+        残り{meetingTime}秒
       </Box>
       <Box
         sx={{
-          width: "39vw",
-          flexBasis: "39vw",
+          width: "400px",
           display: "flex",
-          flexFlow: "column",
+          gap: "30px",
+          position: "fixed",
+          top: "20px",
+          right: "20px",
         }}
       >
         <Box
           sx={{
+            borderRadius: "50%",
+            width: "100px",
             height: "100px",
-            overflow: "scroll",
-            marginBottom: "20px",
-            border: "1px solid green",
-            padding: "10px",
-            borderColor:
-                (tangent.confidence ?? 100) > 40
-                ? "green"
-                : (tangent.confidence ?? 100) > 20
-                ? "orange"
-                : "red",
-            borderWidth: (tangent.confidence ?? 100) > 40 ? "2px" : "4px",
-            borderRadius: "20px",
+            backgroundColor: "#eee",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            border: `1px solid ${isTangentDetected ? "red" : "#00000040"}`,
           }}
+          onClick={() => setTangentContent(tangent.content)}
         >
-          <p>
-            脇道脱線防止{"　"}
-            <Button
-              color="primary"
-              variant="contained"
-              size="small"
-              sx={{ display: (tangent.confidence ?? 0) > 40 ? "none" : "block" }}
-              onClick={() => openDialog(tangent.content)}
-            >
-              指摘を見る
-            </Button>
-          </p>
-          { !tangent.content
-          ? <p>内容が脇道に逸れているか表示されます</p>
-          : <ReactMarkdown>{tangent.content}</ReactMarkdown>
-          }
+          脱線
         </Box>
         <Box
           sx={{
+            borderRadius: "50%",
+            width: "100px",
             height: "100px",
-            overflow: "scroll",
-            marginBottom: "20px",
-            border: "1px solid green",
-            padding: "10px",
-            borderColor: !dispute.conflict_detected ? "green" : "red",
-            borderWidth: !dispute.conflict_detected ? "2px" : "4px",
-            borderRadius: "20px",
+            backgroundColor: "#eee",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            border: `1px solid ${isDisputeDetected ? "red" : "#00000040"}`,
           }}
+          onClick={() => setDisputeContent(dispute.conflict_content)}
         >
-          <p>
-            対立仲裁{"　"}
-            <Button
-              color="primary"
-              variant="contained"
-              size="small"
-              sx={{ display: dispute.conflict_detected ? "block" : "none" }}
-              onClick={() => openDialog(convertDispute(dispute))}
-            >
-              指摘を見る
-            </Button>
-          </p>
-          { !dispute.conflict_description
-          ? <p>争いが起きていたら仲裁します</p>
-          : <ReactMarkdown>{dispute.conflict_description}</ReactMarkdown>
-          }
+          対立
         </Box>
         <Box
           sx={{
+            borderRadius: "50%",
+            width: "100px",
             height: "100px",
-            overflow: "scroll",
-            marginBottom: "20px",
-            border: "1px solid black",
-            padding: "10px",
-            borderRadius: "20px",
+            backgroundColor: "#eee",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            border: `1px solid ${isItemDetected ? "blue" : "#00000040"}`,
           }}
+          onClick={() => setDisplayItemContent(itemContent)}
         >
-          <p>
-            アクションアイテム通知{"　"}
-            <Button
-              onClick={() => copy(actionItem)}
-              color="primary"
-              variant="contained"
-              size="small"
-            >
-              コピーする
-            </Button>
-          </p>
-          <ReactMarkdown>{actionItem}</ReactMarkdown>
-        </Box>
-        <Box
-          sx={{
-            height: "100px",
-            overflow: "scroll",
-            marginBottom: "20px",
-            border: "1px solid black",
-            padding: "10px",
-            borderRadius: "20px",
-          }}
-        >
-          <p>懐疑図示化</p>
-          {mermaidM ? (
-            <Mermaid code={mermaidM} />
-          ) : (
-            <p>議論している内容をマーメイド図に図示します</p>
-          )}
+          A/I
         </Box>
       </Box>
-      <Dialog open={!!dialogContent}>
-        <DialogContent>
-          <ReactMarkdown>{dialogContent}</ReactMarkdown>
+      {!!displayItemContent.length && (
+        <Box
+          sx={{
+            borderRadius: "10px",
+            backgroundColor: "#F0F5FF",
+            position: "fixed",
+            top: "150px",
+            right: "60px",
+            width: "300px",
+          }}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+            }}
+          >
+            <p style={{ margin: "5px 10px" }}>Action Item</p>
+            <Box
+              sx={{
+                marginRight: "10px",
+              }}
+              onClick={() => setDisplayItemContent([])}
+            >
+              ×
+            </Box>
+          </Box>
+          <Box
+            sx={{
+              backgroundColor: "white",
+              width: "260px",
+              margin: "0px 10px 10px",
+              padding: "10px",
+              height: "150px",
+            }}
+          >
+            {displayItemContent.map((it) => {
+              return (
+                <>
+                  ・{it}
+                  <br />
+                </>
+              );
+            })}
+          </Box>
+        </Box>
+      )}
+      <Button
+        color="primary"
+        variant="contained"
+        onClick={copyToClipboard}
+        sx={{ position: "fixed", bottom: "50px", left: "50px" }}
+      >
+        マーメイド図をコピーする
+      </Button>
+      {!!meetingContent.length && 
+      <Box
+        sx={{
+          color: "white",
+          backgroundColor: "#66666670",
+          padding: "5px 10px",
+          display: "flex",
+          justifyContent: "center",
+          position: "fixed",
+          bottom: "20px",
+          margin: "10px 0vw 10px 20px",
+          width: "80vw"
+        }}
+      >
+        {meetingContent[meetingContent.length - 1]}
+      </Box>
+      }
+      <Box
+        sx={{
+          position: "fixed",
+          bottom: "20px",
+          right: "60px",
+        }}
+      >
+        <Tooltip title="会議を終了する">
+          <Box
+            sx={{
+              borderRadius: "50%",
+              backgroundColor: "red",
+              width: "100px",
+              height: "100px",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              fontSize: "50px",
+              color: "white",
+            }}
+            onClick={onEndMeeting}
+          >
+            □
+          </Box>
+        </Tooltip>
+      </Box>
+      <Dialog
+        open={!!tangentContent}
+        sx={{
+          padding: "30px",
+        }}
+      >
+        <DialogTitle>脱線回避方法</DialogTitle>
+        <DialogContent
+          sx={{
+            width: "70vw",
+          }}
+        >
+          <ReactMarkdown>{tangentContent}</ReactMarkdown>
         </DialogContent>
         <DialogActions>
           <Button
-            onClick={() => setDialogContent("")}
-            color="error"
+            onClick={() => setTangentContent("")}
             variant="outlined"
+            color="primary"
           >
             キャンセル
           </Button>
         </DialogActions>
       </Dialog>
-    </Box>
+      <Dialog
+        open={!!disputeContent}
+        sx={{
+          padding: "30px",
+        }}
+      >
+        <DialogTitle>対立回避方法</DialogTitle>
+        <DialogContent
+          sx={{
+            width: "70vw",
+          }}
+        >
+          <ReactMarkdown>{disputeContent}</ReactMarkdown>
+        </DialogContent>
+        <Button
+          onClick={() => setDisputeContent("")}
+          variant="outlined"
+          color="primary"
+        >
+          キャンセル
+        </Button>
+      </Dialog>
+    </>
   );
 };
 

@@ -6,6 +6,5 @@ export type DisputeStep = {
 
 export type Dispute = {
     conflict_detected: boolean;
-    conflict_description: string;
-    steps: DisputeStep[];
+    conflict_content: string;
 }
