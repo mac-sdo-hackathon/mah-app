@@ -18,6 +18,8 @@ steps:
       - '-t'
       - '${_AR_HOSTNAME}/$PROJECT_ID/$REPOSTORY_NAME/${_SERVICE_NAME}:latest'
       - '.'
+      - 'f'
+      - 'Dockerfile'
     dir: 'functions'
     id: 'build-image'
     waitFor: ['pull-latest-image']
