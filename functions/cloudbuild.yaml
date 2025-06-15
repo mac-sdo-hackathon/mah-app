@@ -61,7 +61,7 @@ steps:
       - '--execution-environment'
       - 'gen2'
       - '--labels'
-      - 'managed-by=gcp-cloud-build-deploy-cloud-run,commit-sha=$COMMIT_SHA,gcb-build-id=$BUILD_ID,gcb-trigger-id=$_TRIGGER_ID'
+      - 'managed-by=gcp-cloud-build-deploy-cloud-run,commit-sha=$COMMIT_SHA,gcb-build-id=${_BUILD_ID},gcb-trigger-id=${_TRIGGER_ID}'
       - '--quiet'
     id: 'deploy-cloud-run'
     waitFor: ['push-image-sha']
@@ -79,6 +79,7 @@ substitutions:
   _SERVICE_NAME: 'api'
   _REGION: 'asia-northeast1'
   _PLATFORM: 'managed'
+  _BUILD_ID: '62627fc0-e908-43e7-930c-0d06ecec272e'
   _TRIGGER_ID: 6b67b531-1111-4ea2-ab08-ecc522d78184
 
 # タイムアウト設定（20分）
