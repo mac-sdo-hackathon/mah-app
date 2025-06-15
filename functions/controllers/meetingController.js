@@ -3,11 +3,13 @@
  */
 
 const OpenAIService = require('../services/openaiService');
+const GoogleService = require('../services/googleService');
 const { prompts, systemMessages } = require('../utils/prompts');
 
 class MeetingController {
   constructor() {
     this.openaiService = new OpenAIService();
+    this.googleService = new GoogleService();
   }
 
   /**
@@ -54,7 +56,8 @@ class MeetingController {
 
       const { agenda, goal, content } = validation.data;
       const prompt = prompts.summarizeMeeting(agenda, goal, content);
-      const result = await this.openaiService.chatCompletion(prompt, systemMessages.meetingExpert);
+      // const result = await this.openaiService.chatCompletion(prompt, systemMessages.meetingExpert);
+      const result = await this.googleService.chatCompletion(prompt, systemMessages.meetingExpert);
 
       res.json({ content: result });
     } catch (error) {
@@ -83,7 +86,8 @@ class MeetingController {
 
       const { agenda, goal, content } = validation.data;
       const prompt = prompts.extractActionItems(agenda, goal, content);
-      const result = await this.openaiService.chatCompletion(prompt, systemMessages.meetingExpert);
+      // const result = await this.openaiService.chatCompletion(prompt, systemMessages.meetingExpert);
+      const result = await this.googleService.chatCompletion(prompt, systemMessages.meetingExpert);
 
       res.json({ content: result });
     } catch (error) {
@@ -112,7 +116,8 @@ class MeetingController {
 
       const { agenda, goal, content } = validation.data;
       const prompt = prompts.detectDispute(agenda, goal, content);
-      const result = await this.openaiService.chatCompletion(prompt, systemMessages.meetingExpert);
+      // const result = await this.openaiService.chatCompletion(prompt, systemMessages.meetingExpert);
+      const result = await this.googleService.chatCompletion(prompt, systemMessages.meetingExpert);
 
       res.json({ content: result });
     } catch (error) {
@@ -141,7 +146,8 @@ class MeetingController {
 
       const { agenda, goal, content } = validation.data;
       const prompt = prompts.detectTangent(agenda, goal, content);
-      const result = await this.openaiService.chatCompletion(prompt, systemMessages.meetingExpert);
+      // const result = await this.openaiService.chatCompletion(prompt, systemMessages.meetingExpert);
+      const result = await this.googleService.chatCompletion(prompt, systemMessages.meetingExpert);
 
       res.json({ content: result });
     } catch (error) {
@@ -170,7 +176,8 @@ class MeetingController {
 
       const { agenda, goal, content } = validation.data;
       const prompt = prompts.visualizeMermaid(agenda, goal, content);
-      const result = await this.openaiService.chatCompletion(prompt, systemMessages.meetingExpert);
+      // const result = await this.openaiService.chatCompletion(prompt, systemMessages.meetingExpert);
+      const result = await this.googleService.chatCompletion(prompt, systemMessages.meetingExpert);
 
       res.json({ content: result });
     } catch (error) {
