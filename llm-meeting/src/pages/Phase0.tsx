@@ -51,8 +51,8 @@ const Phase0: React.FC<Props> = ({
 
     return (
         <Box>
-            <h3>会議を開始する</h3>
-            <p>ゴールを入力してください</p>
+            <h3>FaciliChat</h3>
+            <p>会議のゴール</p>
             <TextField
                 value={goal}
                 onChange={(e) => {
@@ -60,15 +60,14 @@ const Phase0: React.FC<Props> = ({
                 }}
                 sx={{
                     width: "50vw",
-                    margin: "15px"
                 }}
             />
             <br/>
-            <p>アジェンダを入力してください</p>
+            <p>アジェンダ</p>
             <CustomTextarea
                 style={{
                     width: "60vw",
-                    margin: "15px"
+                    height: "150px",
                 }}
                 value={agenda}
                 onChange={(e) => {
@@ -87,7 +86,6 @@ const Phase0: React.FC<Props> = ({
                 }}
                 sx={{
                     width: "50vw",
-                    margin: "15px"
                 }}
             />
             <br/>
