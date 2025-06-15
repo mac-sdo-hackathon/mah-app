@@ -2,10 +2,8 @@ steps:
   - name: 'gcr.io/cloud-builders/docker'
     entrypoint: 'bash'
     args:
-      [
-        '-c',
-        'docker pull ${_AR_HOSTNAME}/$PROJECT_ID/${_REPO_NAME}/${_SERVICE_NAME}:latest || exit 0',
-      ]
+      - '-c'
+      - 'docker pull ${_AR_HOSTNAME}/$PROJECT_ID/${_REPO_NAME}/${_SERVICE_NAME}:latest || exit 0'
     id: 'pull-latest-image'
 
   - name: 'gcr.io/cloud-builders/docker'
@@ -22,9 +20,7 @@ steps:
       - 'Dockerfile'
     dir: 'functions'
     env:
-      [
-        'DOCKER_BUILDKIT=1'
-      ]
+      - 'DOCKER_BUILDKIT=1'
     id: 'build-image'
     waitFor: ['pull-latest-image']
 
@@ -46,7 +42,7 @@ steps:
     args:
       - 'run'
       - 'deploy'
-      - 'meeting-app'
+      - '${_CLOUD_RUN_NAME}'
       - '--image'
       - '${_AR_HOSTNAME}/$PROJECT_ID/${_REPO_NAME}/${_SERVICE_NAME}:$COMMIT_SHA'
       - '--region'
@@ -54,14 +50,28 @@ steps:
       - '--platform'
       - 'managed'
       - '--allow-unauthenticated'
+      - '--service-account'
+      - '${_CLOUD_RUN_SA}'
       - '--port'
       - '8080'
+      - '--memory'
+      - '2Gi'
+      - '--cpu'
+      - '2'
+      - '--timeout'
+      - '900'
+      - '--concurrency'
+      - '100'
+      - '--max-instances'
+      - '10'
+      - '--min-instances'
+      - '0'
       - '--cpu-throttling'
       - '--no-cpu-boost'
       - '--execution-environment'
       - 'gen2'
       - '--labels'
-      - 'managed-by=gcp-cloud-build-deploy-cloud-run,commit-sha=$COMMIT_SHA,gcb-build-id=${_BUILD_ID},gcb-trigger-id=${_TRIGGER_ID},${_LABELS}'
+      - 'managed-by=gcp-cloud-build-deploy-cloud-run,commit-sha=$COMMIT_SHA,app=meeting-app'
       - '--quiet'
     id: 'deploy-cloud-run'
     waitFor: ['push-image-sha']
@@ -77,15 +87,15 @@ substitutions:
   _AR_HOSTNAME: 'asia-northeast1-docker.pkg.dev'
   _REPO_NAME: 'functions'
   _SERVICE_NAME: 'api'
+  _CLOUD_RUN_NAME: 'meeting-app'
   _REGION: 'asia-northeast1'
   _PLATFORM: 'managed'
-  _BUILD_ID: '62627fc0-e908-43e7-930c-0d06ecec272e'
-  _TRIGGER_ID: '6b67b531-1111-4ea2-ab08-ecc522d78184'
-  _LABELS: 'gcb-trigger-id=6b67b531-1111-4ea2-ab08-ecc522d78184,gcb-build-id=62627fc0-e908-43e7-930c-0d06ecec272e'
+  _CLOUD_RUN_SA: 'meeting-app-runner@mac-sdo-hackathon.iam.gserviceaccount.com'
 
 # タイムアウト設定（20分）
 timeout: '1200s'
 
+# プッシュするイメージ
 images:
   - '${_AR_HOSTNAME}/$PROJECT_ID/${_REPO_NAME}/${_SERVICE_NAME}:$COMMIT_SHA'
   - '${_AR_HOSTNAME}/$PROJECT_ID/${_REPO_NAME}/${_SERVICE_NAME}:latest'
