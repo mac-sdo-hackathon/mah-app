@@ -60,6 +60,9 @@ steps:
       - '--no-cpu-boost'
       - '--execution-environment'
       - 'gen2'
+      - '--labels'
+      - 'managed-by=gcp-cloud-build-deploy-cloud-run,commit-sha=$COMMIT_SHA,gcb-build-id=$BUILD_ID,gcb-trigger-id=$_TRIGGER_ID'
+      - '--quiet'
     id: 'deploy-cloud-run'
     waitFor: ['push-image-sha']
 
@@ -75,6 +78,8 @@ substitutions:
   _REPO_NAME: 'functions'
   _SERVICE_NAME: 'api'
   _REGION: 'asia-northeast1'
+  _PLATFORM: 'managed'
+  _TRIGGER_ID: 6b67b531-1111-4ea2-ab08-ecc522d78184
 
 # タイムアウト設定（20分）
 timeout: '1200s'
