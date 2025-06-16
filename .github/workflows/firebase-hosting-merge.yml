@@ -5,6 +5,11 @@ name: Deploy to Firebase Hosting on merge
       - main
     paths:
       - 'llm-meeting/**'
+
+permissions:
+  contents: read
+  id-token: write
+
 jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
