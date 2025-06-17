@@ -1,14 +1,17 @@
 name: Deploy to Firebase Hosting on merge
+
 'on':
   push:
     branches:
       - main
     paths:
       - 'llm-meeting/**'
+      - '.github/workflows/**'
 
 permissions:
   contents: read
   id-token: write
+  actions: read
 
 jobs:
   build_and_deploy:
