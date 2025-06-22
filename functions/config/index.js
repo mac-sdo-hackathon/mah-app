@@ -11,7 +11,9 @@ const config = {
     environment: process.env.NODE_ENV || 'development',
   },
   cors: {
-    origin: process.env.CORS_ORIGIN || '*',
+    origin: process.env.NODE_ENV === 'production'
+      ? ['https://mac-sdo-hackathon.web.app/', 'https://mac-sdo-hackathon.firebaseapp.com/']
+      : '*'
   },
 };
 
