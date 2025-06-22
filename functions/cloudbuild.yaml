@@ -1,0 +1,98 @@
+steps:
+  - name: 'gcr.io/cloud-builders/docker'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - 'docker pull ${_AR_HOSTNAME}/$PROJECT_ID/${_REPO_NAME}/${_SERVICE_NAME}:latest || exit 0'
+    id: 'pull-latest-image'
+
+  - name: 'gcr.io/cloud-builders/docker'
+    env:
+      - 'DOCKER_BUILDKIT=1'
+    dir: 'functions'
+    args:
+      - 'build'
+      - '--cache-from'
+      - '${_AR_HOSTNAME}/$PROJECT_ID/${_REPO_NAME}/${_SERVICE_NAME}:latest'
+      - '-t'
+      - '${_AR_HOSTNAME}/$PROJECT_ID/${_REPO_NAME}/${_SERVICE_NAME}:$COMMIT_SHA'
+      - '-t'
+      - '${_AR_HOSTNAME}/$PROJECT_ID/${_REPO_NAME}/${_SERVICE_NAME}:latest'
+      - '.'
+      - '-f'
+      - 'Dockerfile'
+    id: 'build-image'
+    waitFor: ['pull-latest-image']
+
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - '${_AR_HOSTNAME}/$PROJECT_ID/${_REPO_NAME}/${_SERVICE_NAME}:$COMMIT_SHA'
+    id: 'push-image-sha'
+    waitFor: ['build-image']
+
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - '${_AR_HOSTNAME}/$PROJECT_ID/${_REPO_NAME}/${_SERVICE_NAME}:latest'
+    id: 'push-image-latest'
+    waitFor: ['build-image']
+
+  - name: 'gcr.io/cloud-builders/gcloud'
+    args:
+      - 'run'
+      - 'deploy'
+      - '${_CLOUD_RUN_NAME}'
+      - '--image'
+      - '${_AR_HOSTNAME}/$PROJECT_ID/${_REPO_NAME}/${_SERVICE_NAME}:$COMMIT_SHA'
+      - '--region'
+      - '${_REGION}'
+      - '--platform'
+      - 'managed'
+      - '--allow-unauthenticated'
+      - '--service-account'
+      - '${_CLOUD_RUN_SA}'
+      - '--port'
+      - '8080'
+      - '--timeout'
+      - '900'
+      - '--concurrency'
+      - '100'
+      - '--max-instances'
+      - '10'
+      - '--min-instances'
+      - '0'
+      - '--cpu-throttling'
+      - '--no-cpu-boost'
+      - '--execution-environment'
+      - 'gen2'
+      - '--labels'
+      - 'managed-by=gcp-cloud-build-deploy-cloud-run,commit-sha=$COMMIT_SHA,app=meeting-app,gcb-build-id=${_BUILD_ID},gcb-trigger-id=${_TRIGGER_ID}'
+      - '--quiet'
+    id: 'deploy-cloud-run'
+    waitFor: ['push-image-sha']
+
+options:
+  # 並列実行でビルド時間短縮
+  substitutionOption: 'ALLOW_LOOSE'
+  # ログレベル設定
+  logging: CLOUD_LOGGING_ONLY
+
+# 置換変数
+substitutions:
+  _AR_HOSTNAME: 'asia-northeast1-docker.pkg.dev'
+  _REPO_NAME: 'functions'
+  _SERVICE_NAME: 'api'
+  _CLOUD_RUN_NAME: 'meeting-app'
+  _REGION: 'asia-northeast1'
+  _PLATFORM: 'managed'
+  _CLOUD_RUN_SA: 'meeting-app-runner@mac-sdo-hackathon.iam.gserviceaccount.com'
+  _BUILD_ID: '62627fc0-e908-43e7-930c-0d06ecec272e'
+
+# タイムアウト設定（20分）
+timeout: '1200s'
+
+# プッシュするイメージ
+images:
+  - '${_AR_HOSTNAME}/$PROJECT_ID/${_REPO_NAME}/${_SERVICE_NAME}:$COMMIT_SHA'
+  - '${_AR_HOSTNAME}/$PROJECT_ID/${_REPO_NAME}/${_SERVICE_NAME}:latest'
