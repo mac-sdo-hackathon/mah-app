@@ -2,7 +2,7 @@
  * ヘルスチェック・システム情報関連のコントローラー
  */
 
-const config = require('../config');
+const { config } = require('../config');
 const OpenAIService = require('../services/openaiService');
 const GoogleService = require('../services/googleService');
 const AnniversaryService = require('../services/anniversaryService');

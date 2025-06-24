@@ -1,3 +1,24 @@
+const { SecretManagerServiceClient } = require('@google-cloud/secret-manager');
+
+// Secrets Manager からGemini API キーを取得
+async function getGeminiApiKey() {
+  const client = new SecretManagerServiceClient();
+  const projectId = process.env.GOOGLE_CLOUD_PROJECT;
+  console.log(projectId)
+  const secretName = `projects/${projectId}/secrets/gemini-api-key/versions/latest`;
+
+  try {
+    const [version] = await client.accessSecretVersion({
+      name: secretName,
+    });
+
+    return version.payload.data.toString();
+  } catch (error) {
+    console.error('Error accessing secret:', error);
+    throw error;
+  }
+}
+
 // OpenAI API設定
 const config = {
   openai: {
@@ -23,4 +44,7 @@ const config = {
   },
 };
 
-module.exports = config;
+module.exports = {
+  config,
+  getGeminiApiKey
+};
