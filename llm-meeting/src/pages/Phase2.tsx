@@ -80,13 +80,13 @@ const Phase1: React.FC<Props> = ({
       const audioBase64 = await blobToBase64(audioBlob);
 
       try {
-        const response = await fetch(
-          "https://meeting-llm-recording-1013324790992.asia-northeast1.run.app",
-          {
-            method: "POST",
-            body: JSON.stringify({ audioBase64 }),
-          }
-        );
+        const response = await fetch("https://mac-sdo.com/recording-meeting", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ audioBase64 }),
+        });
         const result = await response.text();
         audioChunks.current = [];
         setMeetingContent((prev) => [...prev, result].slice(-10));
@@ -120,17 +120,17 @@ const Phase1: React.FC<Props> = ({
 
   async function fetchActionItem() {
     try {
-      const response = await fetch(
-        "https://action-item-meeting-1013324790992.asia-northeast1.run.app",
-        {
-          method: "POST",
-          body: JSON.stringify({
-            agenda,
-            goal,
-            content: meetingContentRef.current.join(""),
-          }),
-        }
-      );
+      const response = await fetch("https://mac-sdo.com/action-item-meeting", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          agenda,
+          goal,
+          content: meetingContentRef.current.join(""),
+        }),
+      });
       const result = await response.text();
       setActionItem(result);
     } catch (e) {
@@ -140,9 +140,12 @@ const Phase1: React.FC<Props> = ({
   async function fetchTangent() {
     try {
       const response = await fetch(
-        "https://tangent-topic-meeting-1013324790992.asia-northeast1.run.app",
+        "https://mac-sdo.com/tangent-topic-meeting",
         {
           method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
           body: JSON.stringify({
             agenda,
             goal,
@@ -162,9 +165,12 @@ const Phase1: React.FC<Props> = ({
   async function fetchDispute() {
     try {
       const response = await fetch(
-        "https://dispute-argument-meeting-1013324790992.asia-northeast1.run.app",
+        "https://mac-sdo.com/dispute-argument-meeting",
         {
           method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
           body: JSON.stringify({
             agenda,
             goal,
@@ -184,9 +190,12 @@ const Phase1: React.FC<Props> = ({
   async function fetchMermaid() {
     try {
       const response = await fetch(
-        "https://visualize-mermaid-meeting-1013324790992.asia-northeast1.run.app",
+        "https://mac-sdo.com/visualize-mermaid-meeting",
         {
           method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
           body: JSON.stringify({
             agenda,
             goal,
@@ -295,7 +304,7 @@ const Phase1: React.FC<Props> = ({
             border: "1px solid green",
             padding: "10px",
             borderColor:
-                (tangent.confidence ?? 100) > 40
+              (tangent.confidence ?? 100) > 40
                 ? "green"
                 : (tangent.confidence ?? 100) > 20
                 ? "orange"
@@ -310,16 +319,19 @@ const Phase1: React.FC<Props> = ({
               color="primary"
               variant="contained"
               size="small"
-              sx={{ display: (tangent.confidence ?? 0) > 40 ? "none" : "block" }}
+              sx={{
+                display: (tangent.confidence ?? 0) > 40 ? "none" : "block",
+              }}
               onClick={() => openDialog(tangent.content)}
             >
               指摘を見る
             </Button>
           </p>
-          { !tangent.content
-          ? <p>内容が脇道に逸れているか表示されます</p>
-          : <ReactMarkdown>{tangent.content}</ReactMarkdown>
-          }
+          {!tangent.content ? (
+            <p>内容が脇道に逸れているか表示されます</p>
+          ) : (
+            <ReactMarkdown>{tangent.content}</ReactMarkdown>
+          )}
         </Box>
         <Box
           sx={{
@@ -345,10 +357,11 @@ const Phase1: React.FC<Props> = ({
               指摘を見る
             </Button>
           </p>
-          { !dispute.conflict_description
-          ? <p>争いが起きていたら仲裁します</p>
-          : <ReactMarkdown>{dispute.conflict_description}</ReactMarkdown>
-          }
+          {!dispute.conflict_description ? (
+            <p>争いが起きていたら仲裁します</p>
+          ) : (
+            <ReactMarkdown>{dispute.conflict_description}</ReactMarkdown>
+          )}
         </Box>
         <Box
           sx={{

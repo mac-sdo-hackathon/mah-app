@@ -20,17 +20,17 @@ const Phase2: React.FC<Props> = ({
 
   async function fetchSummarize() {
     try {
-      const response = await fetch(
-        "https://summarize-meeting-1013324790992.asia-northeast1.run.app",
-        {
-          method: "POST",
-          body: JSON.stringify({
-            agenda,
-            goal,
-            content: meetingContentAll,
-          }),
-        }
-      );
+      const response = await fetch("https://mac-sdo.com/summarize-meeting", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          agenda,
+          goal,
+          content: meetingContentAll,
+        }),
+      });
       const result = await (await response).text();
       setSummarizeResult(result);
     } catch (e) {
@@ -43,7 +43,7 @@ const Phase2: React.FC<Props> = ({
   }, []);
 
   return (
-    <Box sx={{overflow: "scroll", height: "calc(100vh - 200px)"}}>
+    <Box sx={{ overflow: "scroll", height: "calc(100vh - 200px)" }}>
       <p>上限時間{limitTime}秒の会議</p>
       <hr />
       {summarizeResult ? (
