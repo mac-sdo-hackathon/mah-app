@@ -3,12 +3,14 @@
  */
 
 const OpenAIService = require('../services/openaiService');
+const GoogleService = require('../services/googleService');
 const AnniversaryService = require('../services/anniversaryService');
 const { prompts, systemMessages } = require('../utils/prompts');
 
 class AnniversaryController {
   constructor() {
     this.openaiService = new OpenAIService();
+    this.googleService = new GoogleService();
     this.anniversaryService = new AnniversaryService();
   }
 
@@ -50,7 +52,8 @@ class AnniversaryController {
       // アイスブレイク生成
       const dateString = `${month}/${date}`;
       const prompt = prompts.generateIcebreaker(dateString, selectedAnniversary);
-      const icebreaker = await this.openaiService.chatCompletion(prompt, systemMessages.icebreakerExpert);
+      // const icebreaker = await this.openaiService.chatCompletion(prompt, systemMessages.icebreakerExpert);
+      const icebreaker = await this.googleService.chatCompletion(prompt, systemMessages.icebreakerExpert);
 
       res.json({
         content: icebreaker,
