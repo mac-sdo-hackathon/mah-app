@@ -2,7 +2,7 @@
  * OpenAI API呼び出しサービス
  */
 
-const config = require("../config");
+const { config } = require("../config");
 const speech = require("@google-cloud/speech").v1p1beta1;
 const { GoogleGenAI } = require("@google/genai");
 
