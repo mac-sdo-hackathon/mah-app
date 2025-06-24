@@ -23,7 +23,14 @@ class GoogleService {
       contents: [{ parts: [{ text: prompt }] }],
       systemInstruction: systemMessage,
     });
-    return response.text;
+    const text = response.text;
+    try {
+      const JsonText = JSON.parse(text);
+      return JsonText.content ?? text;
+    } catch (e) {
+      console.error(e);
+      return text;
+    }
   }
 
   async audioTranscription(audioBuffer, language = "ja-JP") {
