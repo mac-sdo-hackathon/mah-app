@@ -33,7 +33,7 @@ class GoogleService {
     const audioConfig = {
       encoding: "WEBM_OPUS",
       sampleRateHertz: 8000,
-      language: language,
+      languageCode: language,
       enableSpeakerDiarization: true,
       minSpeakerCount: 2,
       maxSpeakerCount: 5,
