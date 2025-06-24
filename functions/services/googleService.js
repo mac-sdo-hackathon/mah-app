@@ -13,7 +13,7 @@ class GoogleService {
     this.model = config.google.model;
     this.geminiApiKey = config.google.geminiApiKey;
     // this.googleApiKey = config.google.googleApiKey;
-    this.client = speech.SpeechClient();
+    this.client = new speech.SpeechClient();
     this.ai = GoogleGenAI({ apiKey: this.geminiApiKey });
   }
 
