@@ -4,6 +4,7 @@ FROM node:24-bullseye-slim
 
 # TODO: セキュリティ的に良くないが、ローカル環境のみで使用
 ARG OPENAI_API_KEY
+ARG geminiApiKey
 # 作業ディレクトリを設定
 WORKDIR /app
 
@@ -29,10 +30,11 @@ RUN npm i
 COPY . .
 
 # TODO: セキュリティ的に良くないが、ローカル環境のみで使用
-ENV OPENAI_API_KEY=${OPENAI_API_KEY}
+ENV OPENAI_API_KEY=${OPENAI_API_KEY} \
+    geminiApiKey=${geminiApiKey}
 
 # ポート8080をエクスポート
 EXPOSE 8080
 
 # 開発サーバーを起動（ホットリロード対応）
-CMD ["npm", "run", "dev"]
+# CMD ["npm", "run", "dev"]

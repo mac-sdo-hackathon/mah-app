@@ -14,7 +14,7 @@ class GoogleService {
     this.geminiApiKey = config.google.geminiApiKey;
     // this.googleApiKey = config.google.googleApiKey;
     this.client = new speech.SpeechClient();
-    this.ai = GoogleGenAI({ apiKey: this.geminiApiKey });
+    this.ai = new GoogleGenAI({ apiKey: this.geminiApiKey });
   }
 
   async chatCompletion(prompt, systemMessage) {
