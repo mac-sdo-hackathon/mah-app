@@ -37,7 +37,7 @@ class GoogleService {
     // https://cloud.google.com/speech-to-text/docs/reference/rest/v1p1beta1/RecognitionConfig
     const audioConfig = {
       encoding: "WEBM_OPUS",
-      sampleRateHertz: 8000,
+      sampleRateHertz: 48000,
       languageCode: language,
       enableSpeakerDiarization: true,
       minSpeakerCount: 2,
