@@ -41,7 +41,9 @@ class GoogleService {
     };
     const request = {
       config: audioConfig,
-      audio: audioBuffer
+      audio: {
+        content: audioBuffer
+      }
     }
     const [response] = await this.client.recognize(request);
     const transcription = response.results.slice(0, -1)
