@@ -20,10 +20,8 @@ class GoogleService {
   async chatCompletion(prompt, systemMessage) {
     const response = await this.ai.models.generateContent({
       model: this.model,
-      content: prompt,
-      config: {
-        systemInstruction: systemMessage,
-      },
+      contents: [{ parts: [{ text: prompt }] }],
+      systemInstruction: systemMessage,
     });
     return response.text;
   }
