@@ -5,6 +5,8 @@ import Phase1 from "./pages/Phase1";
 import Phase2 from "./pages/Phase2";
 import Phase3 from "./pages/Phase3";
 import { Link } from "@mui/material";
+import ThemeToggle from "./components/ThemeToggle";
+import { useTheme } from "./contexts/ThemeContext";
 
 function App() {
   const [phase, setPhase] = useState<number>(0);
@@ -12,6 +14,8 @@ function App() {
   const [goal, setGoal] = useState<string>("");
   const [limitTime, setLimitTime] = useState<number>(1800);
   const [meetingContentAll, setMeetingContentAll] = useState<string>("");
+  const { isDarkMode } = useTheme();
+  
   const onClickNew = () => {
     setPhase(0);
   }
@@ -19,10 +23,11 @@ function App() {
     <Box sx={{
       width: "100vw",
       height: "100vh",
-      backgroundColor: "rgba(36, 99, 235, 0.05)",
+      backgroundColor: isDarkMode ? "#111827" : "rgba(36, 99, 235, 0.05)",
       padding: "0px",
       display: "flex",
     }}>
+      <ThemeToggle />
       { phase !== 2 &&
         <Box sx={{
           width: "10vw",
@@ -33,6 +38,13 @@ function App() {
           <br/>
           <Link
             onClick={onClickNew}
+            sx={{
+              color: isDarkMode ? "#60a5fa" : "#646cff",
+              cursor: "pointer",
+              "&:hover": {
+                color: isDarkMode ? "#93c5fd" : "#535bf2"
+              }
+            }}
           >
             新規作成
           </Link>
@@ -45,6 +57,13 @@ function App() {
           <br/>
           <br/>
           <Link
+            sx={{
+              color: isDarkMode ? "#60a5fa" : "#646cff",
+              cursor: "pointer",
+              "&:hover": {
+                color: isDarkMode ? "#93c5fd" : "#535bf2"
+              }
+            }}
           >
             過去の議事録
           </Link>
@@ -56,7 +75,7 @@ function App() {
         margin: "0px",
         padding: "0px 20px 20px",
         height: "auto",
-        backgroundColor: "white",
+        backgroundColor: isDarkMode ? "#1f2937" : "white",
         borderRadius: "20px"
       }}>
         {
