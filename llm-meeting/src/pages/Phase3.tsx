@@ -10,7 +10,7 @@ type Props = {
   meetingContentAll: string;
 };
 
-const Phase2: React.FC<Props> = ({
+const Phase3: React.FC<Props> = ({
   agenda,
   goal,
   limitTime,
@@ -43,7 +43,7 @@ const Phase2: React.FC<Props> = ({
   }, []);
 
   return (
-    <Box sx={{overflow: "scroll", height: "calc(100vh - 200px)"}}>
+    <Box sx={{overflow: "scroll", height: "calc(100vh - 50px)"}}>
       <p>上限時間{limitTime}秒の会議</p>
       <hr />
       {summarizeResult ? (
@@ -58,4 +58,4 @@ const Phase2: React.FC<Props> = ({
   );
 };
 
-export default Phase2;
+export default Phase3;

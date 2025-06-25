@@ -4,6 +4,7 @@ import Phase0 from "./pages/Phase0";
 import Phase1 from "./pages/Phase1";
 import Phase2 from "./pages/Phase2";
 import Phase3 from "./pages/Phase3";
+import { Link } from "@mui/material";
 
 function App() {
   const [phase, setPhase] = useState<number>(0);
@@ -11,17 +12,49 @@ function App() {
   const [goal, setGoal] = useState<string>("");
   const [limitTime, setLimitTime] = useState<number>(1800);
   const [meetingContentAll, setMeetingContentAll] = useState<string>("");
+  const onClickNew = () => {
+    setPhase(0);
+  }
   return (
     <Box sx={{
       width: "100vw",
       height: "100vh",
       backgroundColor: "rgba(36, 99, 235, 0.05)",
-      padding: "30px 0"
+      padding: "0px",
+      display: "flex",
     }}>
+      { phase !== 2 &&
+        <Box sx={{
+          width: "10vw",
+          flexBasis: "10vw",
+          paddingLeft: "10px"
+        }}
+        >
+          <br/>
+          <Link
+            onClick={onClickNew}
+          >
+            新規作成
+          </Link>
+          <br/>
+          <br/>
+          <br/>
+          <br/>
+          <br/>
+          <br/>
+          <br/>
+          <br/>
+          <Link
+          >
+            過去の議事録
+          </Link>
+        </Box>
+      }
       <Box sx={{
-        width: "80vw",
-        margin: "0px 10vw",
-        padding: "30px 20px 50px",
+        width: phase !== 2 ? "90vw" : "100vw",
+        flexBasis: phase !== 2 ? "90vw" : "100vw",
+        margin: "0px",
+        padding: "0px 20px 20px",
         height: "auto",
         backgroundColor: "white",
         borderRadius: "20px"
