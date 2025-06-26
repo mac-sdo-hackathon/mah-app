@@ -6,8 +6,13 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "build:firebase": "tsc -b && vite build --mode production",
+    "build:single": "tsc -b && vite build --config vite.config.single.ts",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "firebase:init": "firebase init",
+    "firebase:deploy": "npm run build:firebase && firebase deploy",
+    "firebase:serve": "npm run build:firebase && firebase serve"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
@@ -22,13 +27,14 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.25.0",
-    "@types/node": "^24.0.1",
+    "@types/node": "^22.0.0",
     "@types/react": "^19.1.2",
     "@types/react-dom": "^19.1.2",
     "@vitejs/plugin-react": "^4.4.1",
     "eslint": "^9.25.0",
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.19",
+    "firebase-tools": "^13.25.0",
     "globals": "^16.0.0",
     "typescript": "~5.8.3",
     "typescript-eslint": "^8.30.1",

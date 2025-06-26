@@ -3,11 +3,13 @@
  */
 
 const OpenAIService = require('../services/openaiService');
+const GoogleService = require('../services/googleService');
 const { base64ToBuffer } = require('../utils/audioUtils');
 
 class AudioController {
   constructor() {
     this.openaiService = new OpenAIService();
+    this.googleService = new GoogleService();
   }
 
   /**
@@ -61,7 +63,8 @@ class AudioController {
       }
 
       // OpenAI APIで文字起こし実行
-      const transcription = await this.openaiService.audioTranscription(audioBuffer, 'ja');
+      // const transcription = await this.openaiService.audioTranscription(audioBuffer, 'ja');
+      const transcription = await this.googleService.audioTranscription(audioBuffer, 'ja-JP');
 
       console.log('Transcription result:', transcription);
       res.json({ content: transcription });

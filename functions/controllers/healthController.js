@@ -2,13 +2,15 @@
  * ヘルスチェック・システム情報関連のコントローラー
  */
 
-const config = require('../config');
+const { config } = require('../config');
 const OpenAIService = require('../services/openaiService');
+const GoogleService = require('../services/googleService');
 const AnniversaryService = require('../services/anniversaryService');
 
 class HealthController {
   constructor() {
     this.openaiService = new OpenAIService();
+    this.googleService = new GoogleService();
     this.anniversaryService = new AnniversaryService();
   }
 
@@ -58,6 +60,7 @@ class HealthController {
       const dependencies = {
         openai: {
           configured: this.openaiService.isConfigValid(),
+          googleConfigured: this.googleService.isConfigValid(),
           status: 'unknown',
         },
         anniversary: {
@@ -68,7 +71,7 @@ class HealthController {
 
       // OpenAI API接続テスト（簡易）
       try {
-        if (dependencies.openai.configured) {
+        if (dependencies.openai.googleConfigured) {
           dependencies.openai.status = 'healthy';
         } else {
           dependencies.openai.status = 'misconfigured';
