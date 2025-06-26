@@ -21,7 +21,7 @@ const Phase3: React.FC<Props> = ({
   async function fetchSummarize() {
     try {
       const response = await fetch(
-        "https://summarize-meeting-1013324790992.asia-northeast1.run.app",
+        "https://mac-sdo.com/summarize-meeting",
         {
           method: "POST",
           headers: {
