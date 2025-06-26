@@ -48,9 +48,8 @@ const Phase2: React.FC<Props> = ({
 
   const [meetingContent, setMeetingContent] = useState<string[]>([]);
   const meetingContentRef = useRef<string[]>([]);
-  const [itemContent, setItemContent] =
-    useState<string[]>([]);
-  const isItemDetected = itemContent.length > 0
+  const [itemContent, setItemContent] = useState<string[]>([]);
+  const isItemDetected = itemContent.length > 0;
   const [displayItemContent, setDisplayItemContent] = useState<string[]>([]);
   // 内容が脇道に逸れているか表示されます
   const [tangent, setTangent] = useState<Tangent>({} as Tangent);
@@ -58,7 +57,7 @@ const Phase2: React.FC<Props> = ({
   const [tangentContent, setTangentContent] = useState<string>("");
   // 争いが起きていたら仲裁します
   const [dispute, setDispute] = useState<Dispute>({} as Dispute);
-  const isDisputeDetected = dispute.conflict_detected ?? false
+  const isDisputeDetected = dispute.conflict_detected ?? false;
   const [disputeContent, setDisputeContent] = useState<string>("");
   // マーメイド図
   const [mermaidM, setMermaidM] = useState("");
@@ -88,8 +87,11 @@ const Phase2: React.FC<Props> = ({
 
       try {
         const response = await fetch(
-          "https://meeting-llm-recording-1013324790992.asia-northeast1.run.app",
+          "https://mac-sdo.com/recording-meeting",
           {
+            headers: {
+              "Content-Type": "application/json",
+            },
             method: "POST",
             body: JSON.stringify({ audioBase64 }),
           }
@@ -116,9 +118,12 @@ const Phase2: React.FC<Props> = ({
   async function fetchActionItem() {
     try {
       const response = await fetch(
-        "https://action-item-meeting-1013324790992.asia-northeast1.run.app",
+        "https://mac-sdo.com/action-item-meeting",
         {
           method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
           body: JSON.stringify({
             agenda,
             goal,
@@ -127,8 +132,10 @@ const Phase2: React.FC<Props> = ({
         }
       );
       const result = await response.text();
-      const resultArray = JSON.parse(result.replace("```json", "").replace("```", ""))
-      if (!Array.isArray(resultArray)){
+      const resultArray = JSON.parse(
+        result.replace("```json", "").replace("```", "")
+      );
+      if (!Array.isArray(resultArray)) {
         setItemContent([]);
         return;
       }
@@ -140,9 +147,12 @@ const Phase2: React.FC<Props> = ({
   async function fetchTangent() {
     try {
       const response = await fetch(
-        "https://tangent-topic-meeting-1013324790992.asia-northeast1.run.app",
+        "https://mac-sdo.com/tangent-topic-meeting",
         {
           method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
           body: JSON.stringify({
             agenda,
             goal,
@@ -162,9 +172,12 @@ const Phase2: React.FC<Props> = ({
   async function fetchDispute() {
     try {
       const response = await fetch(
-        "https://dispute-argument-meeting-1013324790992.asia-northeast1.run.app",
+        "https://mac-sdo.com/dispute-argument-meeting",
         {
           method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
           body: JSON.stringify({
             agenda,
             goal,
@@ -184,9 +197,12 @@ const Phase2: React.FC<Props> = ({
   async function fetchMermaid() {
     try {
       const response = await fetch(
-        "https://visualize-mermaid-meeting-1013324790992.asia-northeast1.run.app",
+        "https://mac-sdo.com/visualize-mermaid-meeting",
         {
           method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
           body: JSON.stringify({
             agenda,
             goal,
@@ -258,7 +274,7 @@ const Phase2: React.FC<Props> = ({
         sx={{
           position: "fixed",
           top: "20px",
-          left: "20px"
+          left: "20px",
         }}
       >
         残り{meetingTime}秒
@@ -353,7 +369,7 @@ const Phase2: React.FC<Props> = ({
               margin: "0px 10px 10px",
               padding: "10px",
               height: "150px",
-              overflow: "scroll"
+              overflow: "scroll",
             }}
           >
             {displayItemContent.map((it) => {
@@ -375,23 +391,23 @@ const Phase2: React.FC<Props> = ({
       >
         マーメイド図をコピーする
       </Button>
-      {!!meetingContent.length && 
-      <Box
-        sx={{
-          color: "white",
-          backgroundColor: "#66666670",
-          padding: "5px 10px",
-          display: "flex",
-          justifyContent: "center",
-          position: "fixed",
-          bottom: "20px",
-          margin: "10px 0vw 10px 20px",
-          width: "80vw"
-        }}
-      >
-        {meetingContent[meetingContent.length - 1]}
-      </Box>
-      }
+      {!!meetingContent.length && (
+        <Box
+          sx={{
+            color: "white",
+            backgroundColor: "#66666670",
+            padding: "5px 10px",
+            display: "flex",
+            justifyContent: "center",
+            position: "fixed",
+            bottom: "20px",
+            margin: "10px 0vw 10px 20px",
+            width: "80vw",
+          }}
+        >
+          {meetingContent[meetingContent.length - 1]}
+        </Box>
+      )}
       <Box
         sx={{
           position: "fixed",
