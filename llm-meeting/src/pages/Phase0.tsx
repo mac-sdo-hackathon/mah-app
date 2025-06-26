@@ -3,23 +3,25 @@ import type { Dispatch, SetStateAction } from "react";
 import { styled } from '@mui/system';
 
 const CustomTextarea = styled(TextareaAutosize)(
-  () => ({
+  ({ theme }) => ({
     width: '100%',
     fontSize: '16px',
     fontFamily: 'inherit',
     padding: '12px',
     borderRadius: '8px',
-    border: '1px solid #ccc',
+    border: `1px solid ${theme.palette.mode === 'dark' ? '#4b5563' : '#ccc'}`,
+    backgroundColor: theme.palette.background.paper,
+    color: theme.palette.text.primary,
     boxShadow: '0 1px 2px rgba(0,0,0,0.05)',
     transition: 'border-color 0.2s, box-shadow 0.2s',
     resize: 'vertical',
     '&:focus': {
       outline: 'none',
-      borderColor: '#1976d2',
-      boxShadow: '0 0 0 3px rgba(25, 118, 210, 0.2)',
+      borderColor: theme.palette.primary.main,
+      boxShadow: `0 0 0 3px ${theme.palette.primary.main}20`,
     },
     '&::placeholder': {
-      color: '#aaa',
+      color: theme.palette.text.secondary,
     },
   })
 );
