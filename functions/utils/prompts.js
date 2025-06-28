@@ -58,7 +58,7 @@ ${content}
    */
   detectDispute: (agenda, goal, content) => {
     return `以下の会議の内容を見て、争いが起きていないかを答えて。
-また争いが起きていたら、仲裁する手順をJSON形式で教えて。
+また争いが起きていたら、conflict_detectedにbooleanで争いが検出されたかを、conflict_contentに争いの仲裁方法をマークダウンで書いて
 
 <入力>
 \`\`\`アジェンダ
