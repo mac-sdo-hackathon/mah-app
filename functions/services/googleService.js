@@ -24,13 +24,7 @@ class GoogleService {
       systemInstruction: systemMessage,
     });
     const text = response.text;
-    try {
-      const JsonText = JSON.parse(text);
-      return JsonText.content ?? text;
-    } catch (e) {
-      console.error(e);
-      return text;
-    }
+    return text;
   }
 
   async audioTranscription(audioBuffer, language = "ja-JP") {
