@@ -22,7 +22,7 @@ const Phase1: React.FC<Props> = ({ setPhase }) => {
           date: today.getDate(),
         }),
       });
-      const result = await response.text();
+      result = await response.text();
       const resultJson = JSON.parse(result);
       if (resultJson.content) setIceBreak(resultJson.content);
     } catch (e) {
