@@ -178,7 +178,7 @@ const Phase2: React.FC<Props> = ({
       const tangentContentJSON = JSON.parse(result);
       if (tangentContentJSON.content) {
         const tangentJSON = JSON.parse(
-          result.replace("```json", "").replace("```", "")
+          tangentContentJSON.content.replace("```json", "").replace("```", "")
         );
         setTangent(tangentJSON as Tangent);
       }
