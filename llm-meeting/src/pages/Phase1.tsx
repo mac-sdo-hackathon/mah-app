@@ -95,7 +95,7 @@ const Phase1: React.FC<Props> = ({ setPhase }) => {
       <Button onClick={onSubmit} color="primary" variant="contained">
         議論を始める
       </Button>
-      <Dialog open={!!setDialogContent}>
+      <Dialog open={!!dialogContent}>
         <DialogContent>
           <Markdown>{dialogContent}</Markdown>
         </DialogContent>
