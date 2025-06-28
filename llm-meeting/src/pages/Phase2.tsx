@@ -141,8 +141,13 @@ const Phase2: React.FC<Props> = ({
         }
       );
       const result = await response.text();
+      const resultContent = JSON.parse(result);
+      if (!resultContent.content) {
+        setItemContent([]);
+        return;
+      }
       const resultArray = JSON.parse(
-        result.replace("```json", "").replace("```", "")
+        resultContent.content.replace("```json", "").replace("```", "")
       );
       if (!Array.isArray(resultArray)) {
         setItemContent([]);
@@ -170,10 +175,13 @@ const Phase2: React.FC<Props> = ({
         }
       );
       const result = await response.text();
-      const tangentJSON = JSON.parse(
-        result.replace("```json", "").replace("```", "")
-      );
-      setTangent(tangentJSON as Tangent);
+      const tangentContentJSON = JSON.parse(result);
+      if (tangentContentJSON.content) {
+        const tangentJSON = JSON.parse(
+          result.replace("```json", "").replace("```", "")
+        );
+        setTangent(tangentJSON as Tangent);
+      }
     } catch (e) {
       console.error(e);
     }
@@ -195,10 +203,13 @@ const Phase2: React.FC<Props> = ({
         }
       );
       const result = await response.text();
-      const disputeJSON = JSON.parse(
-        result.replace("```json", "").replace("```", "")
-      );
-      setDispute(disputeJSON as Dispute);
+      const disputeContentJSON = JSON.parse(result);
+      if (disputeContentJSON.content) {
+        const disputeJSON = JSON.parse(
+          disputeContentJSON.content.replace("```json", "").replace("```", "")
+        );
+        setDispute(disputeJSON as Dispute);
+      }
     } catch (e) {
       console.error(e);
     }
