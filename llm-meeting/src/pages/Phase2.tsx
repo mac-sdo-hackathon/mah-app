@@ -84,7 +84,7 @@ const Phase2: React.FC<Props> = ({
     mediaRecorder.onstop = async () => {
       const audioBlob = new Blob(audioChunks.current, { type: "audio/webm" });
       const audioBase64 = await blobToBase64(audioBlob);
-
+      let result = "";
       try {
         const response = await fetch(
           "https://mac-sdo.com/recording-meeting",
@@ -96,7 +96,9 @@ const Phase2: React.FC<Props> = ({
             body: JSON.stringify({ audioBase64 }),
           }
         );
-        const result = await response.text();
+        result = await response.text();
+        const resultJson = JSON.parse(result);
+        if (resultJson.content) result = resultJson.content
         audioChunks.current = [];
         setMeetingContent((prev) => [...prev, result].slice(-10));
         setMeetingContentAll((prev) => prev + result);
@@ -106,6 +108,13 @@ const Phase2: React.FC<Props> = ({
         ].slice(-10);
       } catch (e) {
         console.error(e);
+        audioChunks.current = [];
+        setMeetingContent((prev) => [...prev, result].slice(-10));
+        setMeetingContentAll((prev) => prev + result);
+        meetingContentRef.current = [
+          ...meetingContentRef.current,
+          result,
+        ].slice(-10);
       }
     };
 
@@ -195,6 +204,7 @@ const Phase2: React.FC<Props> = ({
     }
   }
   async function fetchMermaid() {
+    let result = "";
     try {
       const response = await fetch(
         "https://mac-sdo.com/visualize-mermaid-meeting",
@@ -210,10 +220,12 @@ const Phase2: React.FC<Props> = ({
           }),
         }
       );
-      const result = await response.text();
-      setMermaidM(result.replace("```mermaid", "").replace("```", ""));
+      result = await response.text();
+      const resultJson = JSON.parse(result);
+      if (resultJson.content) setMermaidM(resultJson.content.replace("```mermaid", "").replace("```", ""));
     } catch (e) {
       console.error(e);
+      setMermaidM(result.replace("```mermaid", "").replace("```", ""))
     }
   }
 

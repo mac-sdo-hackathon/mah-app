@@ -8,6 +8,7 @@ type Props = {
 const Phase1: React.FC<Props> = ({ setPhase }) => {
   const [iceBreak, setIceBreak] = useState<string>("");
   async function getIceBreak() {
+    let result = "";
     try {
       setIceBreak("");
       const today = new Date();
@@ -22,9 +23,11 @@ const Phase1: React.FC<Props> = ({ setPhase }) => {
         }),
       });
       const result = await response.text();
-      setIceBreak(result);
+      const resultJson = JSON.parse(result);
+      if (resultJson.content) setIceBreak(resultJson.content);
     } catch (e) {
       console.error(e);
+      setIceBreak(result);
     }
   }
   useEffect(() => {

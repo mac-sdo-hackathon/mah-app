@@ -19,6 +19,7 @@ const Phase3: React.FC<Props> = ({
   const [summarizeResult, setSummarizeResult] = useState<string>("");
 
   async function fetchSummarize() {
+    let result = "";
     try {
       const response = await fetch(
         "https://mac-sdo.com/summarize-meeting",
@@ -34,10 +35,12 @@ const Phase3: React.FC<Props> = ({
           }),
         }
       );
-      const result = await (await response).text();
-      setSummarizeResult(result);
+      result = await (await response).text();
+      const resultJson = JSON.parse(result);
+      if (resultJson.content) setSummarizeResult(resultJson.content);
     } catch (e) {
       console.error(e);
+      setSummarizeResult(result);
     }
   }
 
